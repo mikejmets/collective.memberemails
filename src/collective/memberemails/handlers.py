@@ -6,14 +6,18 @@ from Products.CMFCore.utils import getToolByName
 
 from collective.memberemails.interfaces import IMemberEmailsSettings
 
+
 def collect_data(site, userid):
     portal_url = site.absolute_url()
     reset = site.portal_password_reset.requestReset(userid)
+    mt = getToolByName(site, 'portal_membership')
+    member = mt.getMemberById(userid)
     return {'approval_url': portal_url + '/@@user-approval?userid=' + userid,
             'approve_url': portal_url + '/@@user-approve?userid=' + userid,
             'disapprove_url': portal_url + '/@@user-disapprove?userid=' + userid,
             'userinfo_url': portal_url + '/@@user-information?userid=' + userid,
             'userid': userid,
+            'fullname': member.getProperty('fullname'),
             'pwreset_url': site.pwreset_constructURL(reset['randomstring'])+'?userid='+userid,
             'portal_url': portal_url}
      
